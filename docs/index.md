@@ -1,17 +1,12 @@
-# Welcome to MkDocs
+# SRE / Sysadmin Notes
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Личная база знаний и тренажёр по Linux, сетям, мониторингу и Python.
 
-## Commands
+## Разделы
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+- [Linux](linux/index.md) — systemd, диск, процессы
+- [Networking](networking/index.md) — tcpdump, порты, DNS
+- [Monitoring](monitoring/index.md) — PromQL, алерты, SLO
+- [Python](python/index.md) — скрипты и автоматизация
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+> Сайт собирается из Markdown через MkDocs Material и деплоится в GitHub Pages по push в `main`.

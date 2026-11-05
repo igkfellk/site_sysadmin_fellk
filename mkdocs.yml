@@ -12,14 +12,17 @@ nav:
   - Home: index.md
   - Linux:
     - linux/index.md
-    - systemd: linux/systemd.md
-    - troubleshooting: linux/troubleshooting.md
+    - linux/systemd.md
+#    - troubleshooting: linux/troubleshooting.md
   - Networking:
     - networking/index.md
+    - networking/tcpdump.md
   - Monitoring:
     - monitoring/index.md
+    - monitoring/promql.md
   - Python:
     - python/index.md
+    - python/scripts.md
 markdown_extensions:
   - admonition
   - pymdownx.highlight
@@ -27,3 +30,5 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.details
+extra_css:
+  - stylesheets/extra.css

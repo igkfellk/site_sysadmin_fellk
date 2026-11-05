@@ -1,0 +1,1 @@
+- [Простой health-check на Python](scripts.md)
