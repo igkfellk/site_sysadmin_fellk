@@ -8,6 +8,7 @@ theme:
     - content.code.copy
 plugins:
   - search
+  - superquiz
 nav:
   - Home: index.md
   - Linux:
@@ -23,8 +24,15 @@ nav:
   - Python:
     - python/index.md
     - python/scripts.md
+  - Quiz:
+    - quiz/index.md
+    - quiz/linux-basics.md
+    - quiz/networking-basics.md
+    - quiz/monitoring-basics.md
+    - quiz/python-basics.md
 markdown_extensions:
   - admonition
+  - attr_list
   - pymdownx.highlight
   - pymdownx.superfences
   - pymdownx.tabbed:

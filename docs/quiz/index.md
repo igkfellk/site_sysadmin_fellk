@@ -1,0 +1,4 @@
+- [Проверка знаний: Linux](linux-basics.md)
+- [Проверка знаний: Сети](networking-basics.md)
+- [Проверка знаний: Мониторинг](monitoring-basics.md)
+- [Проверка знаний: Python](python-basics.md)
