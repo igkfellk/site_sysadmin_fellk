@@ -1,0 +1,29 @@
+site_name: SRE / Sysadmin Notes
+theme:
+  name: material
+  language: ru
+  features:
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+plugins:
+  - search
+nav:
+  - Home: index.md
+  - Linux:
+    - linux/index.md
+    - systemd: linux/systemd.md
+    - troubleshooting: linux/troubleshooting.md
+  - Networking:
+    - networking/index.md
+  - Monitoring:
+    - monitoring/index.md
+  - Python:
+    - python/index.md
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
