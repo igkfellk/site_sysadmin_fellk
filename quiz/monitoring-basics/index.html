@@ -1,0 +1,1385 @@
+
+<!doctype html>
+<html lang="ru" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../networking-basics/">
+      
+      
+        <link rel="next" href="../python-basics/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Мониторинг: базовая проверка - SRE / Sysadmin Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link rel="stylesheet" href="../../assets/quiz/quiz-light.css">
+<link rel="stylesheet" href="../../assets/quiz/quiz-dark.css">
+</head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Перейти к содержанию
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Верхний колонтитул">
+    <a href="../.." title="SRE / Sysadmin Notes" class="md-header__button md-logo" aria-label="SRE / Sysadmin Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SRE / Sysadmin Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Мониторинг: базовая проверка
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Поиск" placeholder="Поиск" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Поиск">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Очистить" aria-label="Очистить" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Инициализация поиска
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Навигация" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SRE / Sysadmin Notes" class="md-nav__button md-logo" aria-label="SRE / Sysadmin Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SRE / Sysadmin Notes
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linux
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Linux
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/systemd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Как найти, что съело диск
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/tcpdump/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Быстрый снимок трафика по порту
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Monitoring
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monitoring/promql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Топ-5 подов по потреблению CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/scripts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Простой health-check на Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quiz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linux-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Проверка знаний: Linux
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../networking-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сети: базовая проверка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Мониторинг: базовая проверка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python: базовая проверка для сисадмина
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="_1">Мониторинг: базовая проверка</h1>
+
+<div id="mksq-1" class="mkdocs-superquiz mksq-page-question admonition scquiz mksq-display-eval"
+     data-quiz-id="mksq-1"
+     data-quiz-type="scquiz"
+     data-quiz-handler="scquiz"
+     data-display-mode="eval"
+     data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f"
+     data-eval-id="page-eval1"
+     data-deck-id=""
+     data-question-key="page-eval1/question-1"
+     data-original-question-number="1"
+     data-question-title="Какая функция PromQL корректно работает со счётчиками?"
+     data-question-mark=""
+     data-question-label="Question"
+     data-numbering-enabled="true"
+     data-numbering-scope="all"
+     data-language="en"
+     data-page-language="en"
+     data-randomize-answers="true"
+     data-randomize-questions="true"
+     data-encrypted="H0cXFBwWK0QPR0MNUkRBTBYQRBc6AAoLPhwIVhdLRxRGEBlMX0VJDU8UEQwcPgEVBEhJX1kPEAsQGw4fD0FFRhYFDgcFGko0CBZJBkpbTkUEQQE6Cxc5DxoYHEQFAlsBQ0oEHBUKXzIBAQMHFBkYVhdLVVcdT0hDAw4Lch4GCxcDQ09MRANbSVkPAAQAAxc6QAwdOxYFDgcJVhdLEQtYBkRBTBQEWwg6BQsVFhAeBw9RRQ1fFg1NTkUGQgAVBRcDPhQCB1oOFwoPWUgPGwsJAU1HFRADEgEFG0MYR0MNOBNDABIITwgXRl9GUFlMVlkOHQ0PWUhDTEtFDx0KDQsSEldWVB9FVVUNQRsCARUMQwo6CQoCBFdWVA8KCRVyDBo+AAgRRQQLA0dKQVcJBl8EFyZJBg4AGwsRD1dFVEtWTVVOBVgCHyZIERoOHDgBSAsEEQkSQ09MGlgHCVUNQRkUCxQRRAILOwAUExoeK0kOAxhYDxxDVEcLWAEJSEVEDBwCK14ICgtIQVJBXklVAU1HBwkHDAUzGUwTOgpODBoETF1FWR8QAUlGQxQCB1oOFwpyFw0ZGkVfDTZHFgQSBF1FVgFLRx1IDxwARk5HAU1HAAAUCANEXQ9HRVtOCwkPCQIWBURHOUlGQxYDBl8OBg1yAgYSGQIXXk9fRD47TVVOF0IZFxxOFzcAABQSSB8WOxEDGQFOTg0wOFUNQQ0THAgXch4GCxcDEldWVFZJFwxBBhtDVEc+cEFFRgAUExoeK0kOAxhYDxxDVEdVA10YGTgb">
+
+    <p class="admonition-title mksq-icon-left mksq-has-icon">
+        <img class="mksq-question-icon" src="../../assets/quiz/icons/scquiz.png" alt="" style="--mksq-question-icon-size: 2.5rem; --mksq-question-icon-width: 2.5rem; --mksq-question-icon-height: 2.5rem;" loading="lazy" decoding="async">
+        <span class="mksq-quiz-title-wrap"><span class="mksq-quiz-title">Question 1 — Какая функция PromQL корректно работает со счётчиками?</span></span>
+        <span class="mksq-quiz-title-actions">
+            
+<button class="mkq-unlock-btn locked"
+        onclick="showUnlockModal('question', 'mksq-1')"
+        title="Click to unlock this question correction"
+        data-lock-scope="question"
+        data-correction-unlock-icon="🔐" data-correction-unlocked-icon="🔓"
+        data-lock-state="locked">
+    🔐
+</button>
+            
+        </span>
+    </p>
+
+    
+
+    
+<div class="mkq-question" data-question-id="1" data-randomize-answers="inherit">
+    <div class="mkq-question-text">
+        <span class="mkq-number">1.</span> <p>Какая функция предназначена для вычисления скорости роста счётчика и корректно обрабатывает сбросы?</p> 
+    </div>
+    
+    <div class="mkq-answers">
+<label class="mkq-answer" data-answer-text="rate()">
+    <input type="radio" id="mksq-1-q1-a0" name="mksq-1-q1" value="0" data-answer-index="0">
+    <span class="mkq-answer-text">rate()</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="delta()">
+    <input type="radio" id="mksq-1-q1-a1" name="mksq-1-q1" value="1" data-answer-index="1">
+    <span class="mkq-answer-text">delta()</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="deriv()">
+    <input type="radio" id="mksq-1-q1-a2" name="mksq-1-q1" value="2" data-answer-index="2">
+    <span class="mkq-answer-text">deriv()</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="changes()">
+    <input type="radio" id="mksq-1-q1-a3" name="mksq-1-q1" value="3" data-answer-index="3">
+    <span class="mkq-answer-text">changes()</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label></div>
+</div>
+
+    <div class="mkq-score mksq-question-score-storage mksq-question-score mksq-question-score-visible"
+             id="score-mksq-1"
+             data-score-label="Score"
+             data-max-points="2"
+             aria-live="polite">Score: —/2</div>
+</div>
+
+
+<div id="mksq-2" class="mkdocs-superquiz mksq-page-question admonition scquiz mksq-display-eval"
+     data-quiz-id="mksq-2"
+     data-quiz-type="scquiz"
+     data-quiz-handler="scquiz"
+     data-display-mode="eval"
+     data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f"
+     data-eval-id="page-eval1"
+     data-deck-id=""
+     data-question-key="page-eval1/question-2"
+     data-original-question-number="2"
+     data-question-title="Что означает `up == 0` в Prometheus?"
+     data-question-mark=""
+     data-question-label="Question"
+     data-numbering-enabled="true"
+     data-numbering-scope="all"
+     data-language="en"
+     data-page-language="en"
+     data-randomize-answers="true"
+     data-randomize-questions="true"
+     data-encrypted="H0cXFBwWK0QPR0MNUURBTBYQRBc6AAoLPhwIVhdLRxRGEBlMXEVJDU8UEQwcPgEVBEhJX1kPEAsQGw4fD0FFRhYFDgcFGko0CBZJBkpbTkUEQQE6Cxc5DxoYHEQFAlsBQ0oEHBUKXzIBAQMHFBkYVhdLVVcdT0hDAw4Lch4GCxcDQ09MRANbSVkPAAQAAxc6QAwdOxYFDgcJVhdLEQtYBkRBTBQEWwg6BQsVFhAeBw9RRQ1fFg1NTkUGQgAVBRcDPhQCB1oOFwoPWUgPGwsJAU1HFRADEgEFG0MYR0MNOBNDABIITwgXRl9GU1lMVlkOHQ0PWUhDTEtFDx0KDQsSEldWVBxFVVUNQRsCARUMQwo6CQoCBFdWVA8KCRVyDBo+AAgRRQQLA0dKQVcJBl8EFyZJBg4AGwsRD1dFVEtWTVVOBVgCHyZIERoOHDgBSAsEEQkSQ09MGlgHCVUNQRkUCxQRRAILOwAUExoeK0kOAxhYDxxDVEcLWAEJSEVEDBwCK14ICgtIQVJBXklVAU1HBwkHDAUzGUwTOgpODBoETF1FWR8QAUlGQxQCB1oOFwpyFw0ZGkVfDTZHOBBWVUddKFhbUUpMPx1RWlNVcRhVUFZWPQBcQB4NRSVYU1xVXDsQHVlWVDkTUUFYRHEeVU0eUDQUXlNWGDEQVFFSUykZRBlYVVlxFlhVXQM5WF1RV1BGPQBcQBlYOQwdV1tVMhJVGV5VOBBWVUYOKFhbUU0cPx1RWlMDD0FFRjkTUUFeRnEeVU0eUzQUXlNRHTEQVFFVUikZRBlYUCVYU1xVXEc5WF1RUFU6FEVYRx03EEkZUFk9G1dRHgg5EVVSVUcwAR1fVklxFlhVXVI5WF1RUFdGPQBcQB4POQwdV1sEMhJVGVlVOBBWVUYPKFhbUUodPx1RWlQHcRhVUFEFPQBcQB4POQwdV1sETEtFDzEQVFFXAikZRBlYUCVYU1xVXDsQHVlRVDkTUUFfTHEeVU0eAjQUXlNWHU05EVVSUhAwAR1fUUtxFlhVWlY5WF1RUFY6FEVYQB83EEkZV1k9G1dRGV85EVVSUkcwAR1fUUpxFlhVXVI5WF1RUFdETVVOJF8ECBxZCw0UHUc5WF1RVwM6FEVYRxg3EEkZV1g9G1dRHlg5EVVSUkIwAR1fVklxFlhVXQE5WF1RUFY6FEVYQBw3EEkZV1o9G1dRHlU5EVVSUhcwAR1fUUhxFlhVWgFHcEFFRgYJEwcJF1k0BBdeFA0THUVfDTY4SEVEAhoeBkgIESZMDRsWCxUWchkAHBFEW1U3KQFLRxxfEQcTMRQGQh8AF0dcQQ5OBlgHAAoPWUg6M0tFDwgXFgoUPhEJEkweCQ0PWUhRQFcYUDAY">
+
+    <p class="admonition-title mksq-icon-left mksq-has-icon">
+        <img class="mksq-question-icon" src="../../assets/quiz/icons/scquiz.png" alt="" style="--mksq-question-icon-size: 2.5rem; --mksq-question-icon-width: 2.5rem; --mksq-question-icon-height: 2.5rem;" loading="lazy" decoding="async">
+        <span class="mksq-quiz-title-wrap"><span class="mksq-quiz-title">Question 2 — Что означает `up == 0` в Prometheus?</span></span>
+        <span class="mksq-quiz-title-actions">
+            
+<button class="mkq-unlock-btn locked"
+        onclick="showUnlockModal('question', 'mksq-2')"
+        title="Click to unlock this question correction"
+        data-lock-scope="question"
+        data-correction-unlock-icon="🔐" data-correction-unlocked-icon="🔓"
+        data-lock-state="locked">
+    🔐
+</button>
+            
+        </span>
+    </p>
+
+    
+
+    
+<div class="mkq-question" data-question-id="2" data-randomize-answers="inherit">
+    <div class="mkq-question-text">
+        <span class="mkq-number">2.</span> <p>Что означает метрика <code>up == 0</code> для таргета в Prometheus?</p> 
+    </div>
+    
+    <div class="mkq-answers">
+<label class="mkq-answer" data-answer-text="Скрап таргета не удался">
+    <input type="radio" id="mksq-2-q2-a0" name="mksq-2-q2" value="0" data-answer-index="0">
+    <span class="mkq-answer-text">Скрап таргета не удался</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="Таргет работает нормально">
+    <input type="radio" id="mksq-2-q2-a1" name="mksq-2-q2" value="1" data-answer-index="1">
+    <span class="mkq-answer-text">Таргет работает нормально</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="Метрика отсутствует">
+    <input type="radio" id="mksq-2-q2-a2" name="mksq-2-q2" value="2" data-answer-index="2">
+    <span class="mkq-answer-text">Метрика отсутствует</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="Prometheus перезапустился">
+    <input type="radio" id="mksq-2-q2-a3" name="mksq-2-q2" value="3" data-answer-index="3">
+    <span class="mkq-answer-text">Prometheus перезапустился</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label></div>
+</div>
+
+    <div class="mkq-score mksq-question-score-storage mksq-question-score mksq-question-score-visible"
+             id="score-mksq-2"
+             data-score-label="Score"
+             data-max-points="1"
+             aria-live="polite">Score: —/1</div>
+</div>
+
+
+<div id="mksq-3" class="mkdocs-superquiz mksq-page-question admonition mcquiz mksq-display-eval"
+     data-quiz-id="mksq-3"
+     data-quiz-type="mcquiz"
+     data-quiz-handler="mcquiz"
+     data-display-mode="eval"
+     data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f"
+     data-eval-id="page-eval1"
+     data-deck-id=""
+     data-question-key="page-eval1/question-3"
+     data-original-question-number="3"
+     data-question-title="Выберите корректные способы вычисления 95-го процентиля из гистограммы"
+     data-question-mark=""
+     data-question-label="Question"
+     data-numbering-enabled="true"
+     data-numbering-scope="all"
+     data-language="en"
+     data-page-language="en"
+     data-randomize-answers="true"
+     data-randomize-questions="true"
+     data-encrypted="H0cXFBwWK0QPR0MNUERBTBYQRBc6AAoLPhwIVhdLRxRGEBlMXUVJDU8UEQwcPgEVBEhJX1kPDgsQGw4fD0FFRhYFDgcFGko0CBZJBkpbTkUVXwIVCxcSCBoCFUFJSVkPBhoTARU6SQgDBRAKFVdWVB1FVVUNQQUIADgWTgIXAUdcQUVCRAFLRxpBAgURMQoEVTIWBwoUBFdWVFkZEBwBQ0oSDxEAcgwLFxIDEwZOTg0fFwxIT0hDDQgIXQwXAToHDwYbEV8YR0MNDR0NAktFDxwQARYSCBoCBw9RRSJWQQYUAwUAX09fRFZKQVcYEVUfR0MNQUpNTkUVQgQLEBZEW1VfWh1HRVteAAcTBwkCcgAKAABEW1VOBF8EFRZfFwEOAAYJD0FFRgAUExoeK0kOAxhYDxxDVEdVA11JREcXFBwWK0gZFxZfPAwECAYQQRlHXkUIFBkAWA1JFAxIEBwIAQk6SB8XCxc5BRAKFVgHEVsXQwYUAgtJDU8IDQs5EhYDBkhJX1kdTVhNTkUGQQwIFDoLAA0zB04EFxwPWUgVHBIAAU1HBQsVFhAeB3IfAAFZQVJBNUU5DwUMFxEJBgcNGXIaEBhDFwENC09VA1RQSEUUAAEJXEUfEQlyBx0TDxMMQgM6FwAFDhsIB3IJEBpGBhw6Wwo4BEQ5RkdKQVcwVkUCFg1CBBoAAzgUWAwLEAwKBF1cWhReSVleFgVBDB5FBQEATUVOExQYEQUDEQ1dPAwUHAYRRAILOxYDAhoCEF40BwxOCA0VNVIIcERMTTlEQ1lMVnFJFAxMDRwIAgJNHUNcUUlGCQEYBHIPEAtMFwEOADgWSA4KCgEVPhcZF0YOEVBxQUpNTkU5DwwTA00OFQEcK0keFxhZCgcPMRQATgILABY5AwAPH0gfTFkHQ1hPV1I5D084SEVEAhoeBkgIESZMDRsWCxUWD1dFPzhKQVcPG18ZABpZPAkPHRAAXx46EAAeFVdWVHY2SVkPBhoTARU6Xg4KFgAVQ09MDw8ZEBVIEEpbTjw4AU1HARcUDgczEEgNBAxBF0pbTldLHRAYORg=">
+
+    <p class="admonition-title mksq-icon-left mksq-has-icon">
+        <img class="mksq-question-icon" src="../../assets/quiz/icons/mcquiz.png" alt="" style="--mksq-question-icon-size: 2.5rem; --mksq-question-icon-width: 2.5rem; --mksq-question-icon-height: 2.5rem;" loading="lazy" decoding="async">
+        <span class="mksq-quiz-title-wrap"><span class="mksq-quiz-title">Question 3 — Выберите корректные способы вычисления 95-го процентиля из гистограммы</span></span>
+        <span class="mksq-quiz-title-actions">
+            
+<button class="mkq-unlock-btn locked"
+        onclick="showUnlockModal('question', 'mksq-3')"
+        title="Click to unlock this question correction"
+        data-lock-scope="question"
+        data-correction-unlock-icon="🔐" data-correction-unlocked-icon="🔓"
+        data-lock-state="locked">
+    🔐
+</button>
+            
+        </span>
+    </p>
+
+    
+
+    
+<div class="mkq-question" data-question-id="3" data-randomize-answers="inherit">
+    <div class="mkq-question-text">
+        <span class="mkq-number">3.</span> <p>Какие запросы корректно вычисляют 95-й процентиль из гистограммы <code>http_duration_seconds_bucket</code>?</p> 
+    </div>
+    
+    <div class="mkq-answers">
+<label class="mkq-answer" data-answer-text="&quot;histogram_quantile(0.95, rate(http_duration_seconds_bucket[5m]))&quot;">
+    <input type="checkbox" id="mksq-3-q3-a0" name="mksq-3-q3" value="0" data-answer-index="0">
+    <span class="mkq-answer-text">"histogram_quantile(0.95, rate(http_duration_seconds_bucket[5m]))"</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="&quot;histogram_quantile(0.95, sum by (le) (rate(http_duration_seconds_bucket[5m])))&quot;">
+    <input type="checkbox" id="mksq-3-q3-a1" name="mksq-3-q3" value="1" data-answer-index="1">
+    <span class="mkq-answer-text">"histogram_quantile(0.95, sum by (le) (rate(http_duration_seconds_bucket[5m])))"</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="&quot;quantile(0.95, http_duration_seconds_bucket)&quot;">
+    <input type="checkbox" id="mksq-3-q3-a2" name="mksq-3-q3" value="2" data-answer-index="2">
+    <span class="mkq-answer-text">"quantile(0.95, http_duration_seconds_bucket)"</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="&quot;avg(http_duration_seconds_bucket) * 0.95&quot;">
+    <input type="checkbox" id="mksq-3-q3-a3" name="mksq-3-q3" value="3" data-answer-index="3">
+    <span class="mkq-answer-text">"avg(http_duration_seconds_bucket) * 0.95"</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label></div>
+</div>
+
+    <div class="mkq-score mksq-question-score-storage mksq-question-score mksq-question-score-visible"
+             id="score-mksq-3"
+             data-score-label="Score"
+             data-max-points="3"
+             aria-live="polite">Score: —/3</div>
+</div>
+
+
+<div id="mksq-4" class="mkdocs-superquiz mksq-page-question admonition scquiz mksq-display-eval"
+     data-quiz-id="mksq-4"
+     data-quiz-type="scquiz"
+     data-quiz-handler="scquiz"
+     data-display-mode="eval"
+     data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f"
+     data-eval-id="page-eval1"
+     data-deck-id=""
+     data-question-key="page-eval1/question-4"
+     data-original-question-number="4"
+     data-question-title="Что такое SLI?"
+     data-question-mark=""
+     data-question-label="Question"
+     data-numbering-enabled="true"
+     data-numbering-scope="all"
+     data-language="en"
+     data-page-language="en"
+     data-randomize-answers="true"
+     data-randomize-questions="true"
+     data-encrypted="H0cXFBwWK0QPR0MNV0RBTBYQRBc6AAoLPhwIVhdLRxRGEBlMWkVJDU8UEQwcPgEVBEhJX1kPEAsQGw4fD0FFRhYFDgcFGko0CBZJBkpbTkUEQQE6Cxc5DxoYHEQFAlsBQ0oEHBUKXzIBAQMHFBkYVhdLVVcdT0hDAw4Lch4GCxcDQ09MRANbSVkPAAQAAxc6QAwdOxYFDgcJVhdLEQtYBkRBTBQEWwg6BQsVFhAeBw9RRQ1fFg1NTkUGQgAVBRcDPhQCB1oOFwoPWUgPGwsJAU1HFRADEgEFG0MYR0MNOBNDABIITwgXRl9GVVlMVlkOHQ0PWUhDTEtFDx0KDQsSEldWVBxFVVUNQRsCARUMQwo6CQoCBFdWVA8KCRVyDBo+AAgRRQQLA0dKQVcJBl8EFyZJBg4AGwsRD1dFVEtWTVVOBVgCHyZIERoOHDgBSAsEEQkSQ09MGlgHCVUNQRkUCxQRRAILOwAUExoeK0kOAxhYDxxDVEcLWAEJSEVEDBwCK14ICgtIQVJBXklVAU1HBwkHDAUzGUwTOgpODBoETF1FWR8QAUlGQxQCB1oOFwpyFw0ZGkVfDTZHNwAUFxwPEQ0nAA9ID0goAAMMTgwRCxdGPQBeRBxfRSVYU1xSVjsQHVlWUzkTUUFfF3EeVU0eVjQUXlNRHTEQVFFVWSkZRBlYBiVYU1xVDDsQHVlWXUU6FEVYR0s3EEkZUA09G1dRHgw5EVVSUkUwAR1fVk5xFlhVXVc5WF1RUFc6FEVYRxg3EEkZUAo9G1dRGQ5FOBBWVUFfKFhbUU0dPx1RWlQAcRhVUFZUPQBcQB4POQwdV1wHTjsQHVlRVTkTUUFfQXEeVU0ZUzQUXlNWHzEQVFFVWSkZRBlfVCVYU1xSXkVJDU82ARcQCBYJVGEOExxBQykGHAIAQAgLEEU6FEdcRRlLOQwdV1wEMhJVGVlVOBBWVUZUKFhbUUoZPx1RWlRdcRhVUFFRPQBcQB5eOQwdV1xQMhJVGV4EOBBWVUZUKFhbUUoUQzQUXlNWGTEQVFFVBCkZRBlYViVYU1xSCzsQHVlWVjkTUUFfEXEeVU0ZU0pNTkU2VB4RAQhGLRoLVGQFERxfBQkCC0c5WF9VVVFGPQBcQB5TOQwdV1sFMhJVGVlXOBBWVUZZKFhbUU0dPx1RWlNRcRhVUFZTPQBcQB5SOQwdV1xQTjsQHVlRVTkTUUFfTHEeVU0ZUjQUXlNRHzEQVFFVVCkZRBlYBiVYU1xSCjsQHVlRBjkTUUFYQQ03EEkZUAo9G1dRHgg5EVVSUkYwAR1fVhxxFlhVXVVHAU1HNxEJExQLEQ0nBA1IDQsYTi4LSQgdRDkTU0VdQA03EEkZUFA9G1dRHgk5EVVSUkEwAR1fVkxxFlhVXQY5WF1RUFRGPQBcQB5cOQwdV1tRMhJVGV5ROBBWVUZZKFhbUU0dPx1RWlRTcRhVUFYHPQBcQB5TRSVYU1xVWzsQHVlRVDkTUUFfRHEeVU0eBzQUXlNWFTEQVFFVAykZRBlYXSVYU1xVVzsQHVlWVEc7TVVOF0IZFxxOFzcAABQSSB8WRl9GOihAVA8ICgtfBgsVMQYLXhoAFhY5FRAUAA9RRSJwT0hDCxUXQh86FwYJExAfVhdLHltfFgQEHUVfDTY4SEVEBAceG180ARxLAh0NGkVfDV1LVBgbPAg=">
+
+    <p class="admonition-title mksq-icon-left mksq-has-icon">
+        <img class="mksq-question-icon" src="../../assets/quiz/icons/scquiz.png" alt="" style="--mksq-question-icon-size: 2.5rem; --mksq-question-icon-width: 2.5rem; --mksq-question-icon-height: 2.5rem;" loading="lazy" decoding="async">
+        <span class="mksq-quiz-title-wrap"><span class="mksq-quiz-title">Question 4 — Что такое SLI?</span></span>
+        <span class="mksq-quiz-title-actions">
+            
+<button class="mkq-unlock-btn locked"
+        onclick="showUnlockModal('question', 'mksq-4')"
+        title="Click to unlock this question correction"
+        data-lock-scope="question"
+        data-correction-unlock-icon="🔐" data-correction-unlocked-icon="🔓"
+        data-lock-state="locked">
+    🔐
+</button>
+            
+        </span>
+    </p>
+
+    
+
+    
+<div class="mkq-question" data-question-id="4" data-randomize-answers="inherit">
+    <div class="mkq-question-text">
+        <span class="mkq-number">4.</span> <p>Что означает аббревиатура SLI в контексте SRE?</p> 
+    </div>
+    
+    <div class="mkq-answers">
+<label class="mkq-answer" data-answer-text="Service Level Indicator — измеримый показатель уровня сервиса">
+    <input type="radio" id="mksq-4-q4-a0" name="mksq-4-q4" value="0" data-answer-index="0">
+    <span class="mkq-answer-text">Service Level Indicator — измеримый показатель уровня сервиса</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="Service Level Agreement — юридический договор">
+    <input type="radio" id="mksq-4-q4-a1" name="mksq-4-q4" value="1" data-answer-index="1">
+    <span class="mkq-answer-text">Service Level Agreement — юридический договор</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="System Log Interface — интерфейс системных логов">
+    <input type="radio" id="mksq-4-q4-a2" name="mksq-4-q4" value="2" data-answer-index="2">
+    <span class="mkq-answer-text">System Log Interface — интерфейс системных логов</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="Storage Latency Index — индекс задержки хранилища">
+    <input type="radio" id="mksq-4-q4-a3" name="mksq-4-q4" value="3" data-answer-index="3">
+    <span class="mkq-answer-text">Storage Latency Index — индекс задержки хранилища</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label></div>
+</div>
+
+    <div class="mkq-score mksq-question-score-storage mksq-question-score mksq-question-score-visible"
+             id="score-mksq-4"
+             data-score-label="Score"
+             data-max-points="1"
+             aria-live="polite">Score: —/1</div>
+</div>
+
+
+<div id="mksq-5" class="mkdocs-superquiz mksq-page-question admonition scquiz mksq-display-eval"
+     data-quiz-id="mksq-5"
+     data-quiz-type="scquiz"
+     data-quiz-handler="scquiz"
+     data-display-mode="eval"
+     data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f"
+     data-eval-id="page-eval1"
+     data-deck-id=""
+     data-question-key="page-eval1/question-5"
+     data-original-question-number="5"
+     data-question-title="Какой тип метрики подходит для «текущего количества элементов в очереди»?"
+     data-question-mark=""
+     data-question-label="Question"
+     data-numbering-enabled="true"
+     data-numbering-scope="all"
+     data-language="en"
+     data-page-language="en"
+     data-randomize-answers="true"
+     data-randomize-questions="true"
+     data-encrypted="H0cXFBwWK0QPR0MNVkRBTBYQRBc6AAoLPhwIVhdLRxRGEBlMW0VJDU8UEQwcPgEVBEhJX1kPEAsQGw4fD0FFRhYFDgcFGko0CBZJBkpbTkUEQQE6Cxc5DxoYHEQFAlsBQ0oEHBUKXzIBAQMHFBkYVhdLVVcdT0hDAw4Lch4GCxcDQ09MRANbSVkPAAQAAxc6QAwdOxYFDgcJVhdLEQtYBkRBTBQEWwg6BQsVFhAeBw9RRQ1fFg1NTkUGQgAVBRcDPhQCB1oOFwoPWUgPGwsJAU1HFRADEgEFG0MYR0MNOBNDABIITwgXRl9GVFlMVlkOHQ0PWUhDTEtFDx0KDQsSEldWVBxFVVUNQRsCARUMQwo6CQoCBFdWVA8KCRVyDBo+AAgRRQQLA0dKQVcJBl8EFyZJBg4AGwsRD1dFVEtWTVVOBVgCHyZIERoOHDgBSAsEEQkSQ09MGlgHCVUNQRkUCxQRRAILOwAUExoeK0kOAxhYDxxDVEcLWAEJSEVEDBwCK14ICgtIQVJBXklVAU1HBwkHDAUzGUwTOgpODBoETF1FWR8QAUlGQxQCB1oOFwpyFw0ZGkVfDTZHIwQTBhBOWA1JJhZYDRwEHEVJDU8tDRYSDhIeFUBJSVkPMB0MAwYXVE84SEVEAhoeBkgIESZMDRsWCxUWD1dFPzhKQVcPG18ZABpZPAkPHRAAXx46EAAeFVdWVHY2SVkPBhoTARU6Xg4KFgAVQ09MDw8ZEBVIEEpbTjw4AU1HARcUDgczEEgNBAxBF0pbTldLHRAYORg=">
+
+    <p class="admonition-title mksq-icon-left mksq-has-icon">
+        <img class="mksq-question-icon" src="../../assets/quiz/icons/scquiz.png" alt="" style="--mksq-question-icon-size: 2.5rem; --mksq-question-icon-width: 2.5rem; --mksq-question-icon-height: 2.5rem;" loading="lazy" decoding="async">
+        <span class="mksq-quiz-title-wrap"><span class="mksq-quiz-title">Question 5 — Какой тип метрики подходит для «текущего количества элементов в очереди»?</span></span>
+        <span class="mksq-quiz-title-actions">
+            
+<button class="mkq-unlock-btn locked"
+        onclick="showUnlockModal('question', 'mksq-5')"
+        title="Click to unlock this question correction"
+        data-lock-scope="question"
+        data-correction-unlock-icon="🔐" data-correction-unlocked-icon="🔓"
+        data-lock-state="locked">
+    🔐
+</button>
+            
+        </span>
+    </p>
+
+    
+
+    
+<div class="mkq-question" data-question-id="5" data-randomize-answers="inherit">
+    <div class="mkq-question-text">
+        <span class="mkq-number">5.</span> <p>Какой тип метрики Prometheus лучше всего подходит для значения, которое может расти и уменьшаться?</p> 
+    </div>
+    
+    <div class="mkq-answers">
+<label class="mkq-answer" data-answer-text="Gauge">
+    <input type="radio" id="mksq-5-q5-a0" name="mksq-5-q5" value="0" data-answer-index="0">
+    <span class="mkq-answer-text">Gauge</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="Counter">
+    <input type="radio" id="mksq-5-q5-a1" name="mksq-5-q5" value="1" data-answer-index="1">
+    <span class="mkq-answer-text">Counter</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="Histogram">
+    <input type="radio" id="mksq-5-q5-a2" name="mksq-5-q5" value="2" data-answer-index="2">
+    <span class="mkq-answer-text">Histogram</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label>
+<label class="mkq-answer" data-answer-text="Summary">
+    <input type="radio" id="mksq-5-q5-a3" name="mksq-5-q5" value="3" data-answer-index="3">
+    <span class="mkq-answer-text">Summary</span>
+    <span class="mkq-answer-feedback" style="display:none;"></span>
+</label></div>
+</div>
+
+    <div class="mkq-score mksq-question-score-storage mksq-question-score mksq-question-score-visible"
+             id="score-mksq-5"
+             data-score-label="Score"
+             data-max-points="1"
+             aria-live="polite">Score: —/1</div>
+</div>
+
+<nav class="mksq-page-navigation mksq-page-navigation-top mksq-navigation-draggable mksq-page-navigation-sticky"
+     data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f"
+     data-eval-id="page-eval1"
+     data-deck-id=""
+     data-host="page"
+     data-position="top"
+     data-prefix=""
+     data-show-titles="false"
+     data-draggable="true"
+     data-replace-toc="false"
+     aria-label="Question navigation">
+    <div class="mksq-page-navigation-inner"><a class="mksq-page-navigation-link" data-quiz-id="mksq-1" data-question-number="1" data-eval-number="1" data-question-mark="" data-question-title="Какая функция PromQL корректно работает со счётчиками?" title="Какая функция PromQL корректно работает со счётчиками?" href="#mksq-1">1</a><a class="mksq-page-navigation-link" data-quiz-id="mksq-2" data-question-number="2" data-eval-number="2" data-question-mark="" data-question-title="Что означает `up == 0` в Prometheus?" title="Что означает `up == 0` в Prometheus?" href="#mksq-2">2</a><a class="mksq-page-navigation-link" data-quiz-id="mksq-3" data-question-number="3" data-eval-number="3" data-question-mark="" data-question-title="Выберите корректные способы вычисления 95-го процентиля из гистограммы" title="Выберите корректные способы вычисления 95-го процентиля из гистограммы" href="#mksq-3">3</a><a class="mksq-page-navigation-link" data-quiz-id="mksq-4" data-question-number="4" data-eval-number="4" data-question-mark="" data-question-title="Что такое SLI?" title="Что такое SLI?" href="#mksq-4">4</a><a class="mksq-page-navigation-link" data-quiz-id="mksq-5" data-question-number="5" data-eval-number="5" data-question-mark="" data-question-title="Какой тип метрики подходит для «текущего количества элементов в очереди»?" title="Какой тип метрики подходит для «текущего количества элементов в очереди»?" href="#mksq-5">5</a></div>
+</nav>
+
+<div class="mksq-page-quiz-actions mksq-eval-actions"
+     data-page-quiz-id="d2f736f4-f592-4d8c-b20e-97300d90102f"
+     data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f"
+     data-eval-id="page-eval1"
+     data-deck-id=""
+     data-host="page"
+     data-eval-policy='{"type":"standard","show_live_violations_in_toolbar":false,"show_live_violations_tooltips":true,"qr_report":{"enabled":false},"toolbar":{"position":"auto","draggable":true,"show_qrcode":true,"show_reset_all":true,"show_unlock_all":true},"fullscreen":{"required":false},"violations":{"fullscreen_exit":{"action":"ignore"},"visibility_hidden":{"action":"warn"},"focus_lost":{"action":"ignore"},"reload_attempt":{"action":"warn"},"reload":{"action":"warn"},"page_leave":{"action":"warn"},"copy":{"action":"ignore"},"cut":{"action":"ignore"},"paste":{"action":"ignore"},"context_menu":{"action":"ignore"},"print":{"action":"warn"},"storage_tampering":{"action":"invalidate"}}}'
+     data-eval-access='{"enabled":false}'
+     data-timer-config='{"enabled": false, "mode": "countdown", "duration": "50m", "start": "first_interaction", "draggable": true, "initial_position": "top-right", "remember_position": true, "offset": {"x": 16, "y": 16}, "expire": "submit", "style": null}'>
+    <button type="button" class="mkq-validate-btn mksq-page-validate-btn"
+            onclick="validateEval('d2f736f4-f592-4d8c-b20e-97300d90102f', 'page-eval1')">Validate</button>
+    <div class="mkq-score mksq-page-score" id="score-eval-page-eval1" style="display:none;"></div>
+    <div class="mksq-eval-status" hidden></div>
+    <div class="mksq-eval-violations-summary" hidden></div>
+</div>
+<aside class="mksq-eval-toolbar mksq-eval-toolbar-page mksq-eval-toolbar-side-right mksq-eval-toolbar-draggable mksq-page-eval-toolbar" data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f" data-eval-id="page-eval1" data-deck-id="" data-host="page" data-draggable="true" data-toolbar-position="auto" data-navigation-position="top" hidden><div class="mksq-eval-toolbar-drag-handle" aria-hidden="true" title="Drag toolbar">⠿</div><div class="mksq-eval-toolbar-qr mksq-reveal-eval-toolbar-qr" aria-live="polite" title="Live violations QR report" hidden>QR</div><div class="mksq-page-timer mksq-eval-toolbar-timer" data-page-uuid="d2f736f4-f592-4d8c-b20e-97300d90102f" data-eval-id="page-eval1" data-deck-id="" data-host="page" hidden></div><div class="mksq-eval-toolbar-actions mksq-reveal-eval-toolbar-actions"><button type="button" class="mksq-eval-toolbar-unlock-btn mksq-reveal-eval-unlock-btn locked" onclick="showUnlockModal('all_questions', null, null, 'page-eval1')" data-correction-unlock-icon="🔐" data-correction-unlocked-icon="🔓" data-lock-scope="all_questions" data-lock-state="locked" title="Unlock All Corrections"><span class="mksq-correction-state-icon" aria-hidden="true">🔐</span><span>Unlock All Corrections</span></button><button type="button" class="mksq-eval-toolbar-reset-btn mksq-reveal-eval-reset-btn" onclick="resetEval('d2f736f4-f592-4d8c-b20e-97300d90102f', 'page-eval1')" title="Reset all questions"><span aria-hidden="true">🔄</span><span>Reset all questions</span></button></div><div class="mksq-eval-toolbar-live-slot mksq-reveal-eval-live-slot"></div></aside>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  <script src="../../assets/quiz/qrcode.min.js"></script>
+<script src="../../assets/quiz/jsplumb.min.js"></script>
+<script src="../../assets/quiz/quiz-runtime.js"></script>
+<script src="../../assets/quiz/quiz.js"></script>
+</body>
+</html>

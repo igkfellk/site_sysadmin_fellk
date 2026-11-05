@@ -1,0 +1,185 @@
+/**
+ * Styles pour la page de déblocage enseignant
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.unlock-container {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.unlock-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+}
+
+.unlock-info p {
+    margin: 0.5rem 0;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+.unlock-info strong {
+    color: #212529;
+    font-weight: 600;
+}
+
+#teacher-form {
+    margin-top: 1.5rem;
+}
+
+#teacher-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #495057;
+}
+
+#teacher-form input[type="password"] {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+#teacher-form input[type="password"]:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#teacher-form button[type="submit"] {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#teacher-form button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+#teacher-form button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+#generated-code-section {
+    text-align: center;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#generated-code-section h2 {
+    color: #28a745;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.unlock-code-display {
+    background: #f8f9fa;
+    border: 3px dashed #28a745;
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.3rem;
+    color: #212529;
+    font-family: "Courier New", monospace;
+    margin: 1rem 0;
+}
+
+.instruction {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin: 1rem 0;
+}
+
+#generated-code-section button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#generated-code-section button:hover {
+    background: #218838;
+    transform: scale(1.05);
+}
+
+.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .unlock-container {
+        padding: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .unlock-code-display {
+        font-size: 1.5rem;
+        letter-spacing: 0.2rem;
+    }
+}
